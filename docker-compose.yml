@@ -1,0 +1,109 @@
+version: '3'
+
+
+services:
+
+  nginx:
+    container_name: http-server-container
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: fr-application-http-server/Dockerfile
+    depends_on:
+      - backend
+    ports:
+      - "${NGINX_PORT}:${NGINX_PORT}"
+    volumes:
+      - ./fr-application-http-server/nginx.conf:/etc/nginx/nginx.conf
+      - ./fr-application-http-server/html/index.html:/var/www/html/index.html
+    networks:
+      - app-network
+  
+  database:
+    container_name: database-container
+    image: mysql:latest
+    env_file:
+      - .env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - ./volume-fr-administration-database:/var/lib/mysql
+    ports:
+      - "${MYSQL_PORT}:${MYSQL_PORT}"
+    networks:
+      - app-network
+
+  backend:
+    container_name: api-container
+    env_file:
+      - .env
+    build:
+      context: ./fr-administration-api
+      dockerfile: Dockerfile
+    ports:
+      - "${API_PORT}:${API_PORT}"
+    restart: unless-stopped
+    command: sh -c "npm run build && node dist/main.js"
+    depends_on:
+      - database
+      - rabbitmq
+    volumes:
+      - ./fr-administration-api:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - app-network
+
+  rabbitmq:
+    container_name: rabbitmq-container
+    image: rabbitmq:3.12-management
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    ports:
+      - "${RABBITMQ_PORT_1}:${RABBITMQ_PORT_1}"
+      - "${RABBITMQ_PORT_2}:${RABBITMQ_PORT_2}"
+    networks:
+      - app-network
+
+  quarkus:
+    container_name: quarkus-container
+    build:
+      context: ./fr-administration-quarkus
+      dockerfile: src/main/docker/Dockerfile.jvm
+    ports:
+      - "${QUARKUS_PORT}:${QUARKUS_PORT}"
+    depends_on:
+      - database
+      - rabbitmq
+    volumes:
+      - ./fr-administration-quarkus:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - app-network
+
+  maildev:
+    container_name: maildev-container
+    image: maildev/maildev:latest
+    env_file:
+      - .env
+    restart: unless-stopped
+    ports:
+      - "${MAILDEV_PORT_1}:${MAILDEV_PORT_1}"
+      - "${MAILDEV_PORT_2}:${MAILDEV_PORT_2}"
+    networks:
+      - app-network
+
+
+volumes:
+  volume-fr-administration-database:
+
+
+networks:
+  app-network:
