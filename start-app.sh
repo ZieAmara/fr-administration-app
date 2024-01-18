@@ -40,4 +40,4 @@ cd fr-administration-quarkus
 quarkus build
 cd ..
 
-#sudo docker-compose up --build -d
+sudo docker-compose up --build -d
