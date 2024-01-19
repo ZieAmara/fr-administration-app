@@ -37,7 +37,7 @@ echo "\nDocker images downloaded\n"
 
 
 cd fr-administration-quarkus
-quarkus build
+#quarkus build
 cd ..
 
 sudo docker-compose up --build -d

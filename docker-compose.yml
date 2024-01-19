@@ -76,7 +76,7 @@ services:
     container_name: quarkus-container
     build:
       context: ./fr-administration-quarkus
-      dockerfile: src/main/docker/Dockerfile.jvm
+      dockerfile: src/main/docker/Dockerfile.multistage
     ports:
       - "${QUARKUS_PORT}:${QUARKUS_PORT}"
     depends_on:
