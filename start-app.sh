@@ -33,4 +33,4 @@ echo "\nDocker images downloaded\n"
 # Start containers
 sudo docker-compose up --build -d
 
-echo "\nContainers started\n\n* Click on http://localhost:80 to access the application frontend\n\n* Click on http://localhost:80/api if your goal is to see the API endpoints or interact with it\n\n* Click on http://localhost:80/maildev to access the mail server for sees the mail send to the users with the application frontend\n\n"
+echo "\nContainers started\n\n* Click on http://localhost:80/front to access the application frontend\n\n* Click on http://localhost:80/api if your goal is to see the API endpoints or interact with it\n\n* Click on http://localhost:1080/#/ to access the mail server for sees the mail send to the users with the application frontend\n\n"
