@@ -22,7 +22,7 @@ clone_repo "fr-administration-quarkus" "https://github.com/ZieAmara/fr-administr
 
 
 # Pull Docker images
-echo "Pulling Docker images..."
+echo "\nPulling Docker images...\n"
 docker pull node:lts-alpine -q && echo "Node image downloaded"
 docker pull mysql:latest -q && echo "MySQL image downloaded"
 docker pull nginx:latest -q && echo "Nginx image downloaded"
@@ -32,3 +32,5 @@ echo "\nDocker images downloaded\n"
 
 # Start containers
 sudo docker-compose up --build -d
+
+echo "\nContainers started\n\n* Click on http://localhost:80 to access the application frontend\n\n* Click on http://localhost:80/api if your goal is to see the API endpoints or interact with it\n\n* Click on http://localhost:80/maildev to access the mail server for sees the mail send to the users with the application frontend\n\n"
