@@ -23,11 +23,14 @@ clone_repo "fr-administration-quarkus" "https://github.com/ZieAmara/fr-administr
 
 # Pull Docker images
 echo "\nPulling Docker images...\n"
-docker pull node:lts-alpine -q && echo "Node image downloaded"
-docker pull mysql:latest -q && echo "MySQL image downloaded"
-docker pull nginx:latest -q && echo "Nginx image downloaded"
-docker pull rabbitmq:3.12-management -q && echo "RabbitMQ image downloaded"
-docker pull maildev/maildev:latest -q && echo "MailDev image downloaded"
+
+echo "Downloading Node image..." && docker pull node:lts-alpine -q 
+echo "Downloading MySQL image..." && docker pull mysql:latest -q 
+echo "Downloading Nginx image..." && docker pull nginx:latest -q 
+echo "Downloading RabbitMQ image..." && docker pull rabbitmq:3.12-management -q 
+echo "Downloading MailDev image..." && docker pull maildev/maildev:latest -q 
+echo "Downloading Prometheus image..." && docker pull prom/prometheus:latest -q 
+echo "Downloading Grafana image..." && docker pull grafana/grafana:latest -q
 echo "\nDocker images downloaded\n"
 
 # Start containers
