@@ -49,7 +49,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - "${API_PORT}:${API_PORT}"
-    restart: unless-stopped
+    restart: always
     command: sh -c "npm run build && node dist/main.js"
     depends_on:
       - database
@@ -62,6 +62,7 @@ services:
       
   nginx:
     container_name: http-server-container
+    restart: always
     env_file:
       - .env
     build:
@@ -79,6 +80,9 @@ services:
 
   quarkus:
     container_name: quarkus-container
+    restart: always
+    env_file:
+      - .env
     build:
       context: ./fr-administration-quarkus
       dockerfile: src/main/docker/Dockerfile.multistage

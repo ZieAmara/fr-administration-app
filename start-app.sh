@@ -36,4 +36,9 @@ echo "\nDocker images downloaded\n"
 # Start containers
 sudo docker-compose up --build -d
 
+if [ $? -eq 1 ]; then
+    echo "Failed to start containers."
+    exit 1
+fi
+
 echo "\nContainers started\n\n* Click on http://localhost:80/front to access the application frontend\n\n* Click on http://localhost:80/api if your goal is to see the API endpoints or interact with it\n\n* Click on http://localhost:1080/#/ to access the mail server for sees the mail send to the users with the application frontend\n\n "
