@@ -1,2 +1,5 @@
+CREATE USER IF NOT EXISTS 'zie'@'%' IDENTIFIED BY '12345678';
+GRANT ALL PRIVILEGES ON *.* TO 'zie'@'%';
+FLUSH PRIVILEGES;
+
 CREATE DATABASE IF NOT EXISTS `associations_admin_db`;
-USE `associations_admin_db`;

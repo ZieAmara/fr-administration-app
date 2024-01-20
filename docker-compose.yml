@@ -3,27 +3,11 @@ version: '3'
 
 services:
 
-  nginx:
-    container_name: http-server-container
-    env_file:
-      - .env
-    build:
-      context: .
-      dockerfile: fr-application-http-server/Dockerfile
-    depends_on:
-      - backend
-    ports:
-      - "${NGINX_PORT}:${NGINX_PORT}"
-    volumes:
-      - ./fr-application-http-server/nginx.conf:/etc/nginx/nginx.conf
-      - ./fr-application-http-server/html/index.html:/var/www/html/index.html
-    networks:
-      - app-network
-  
   database:
     container_name: database-container
     image: mysql:latest
     command: --init-file /docker-entrypoint-initdb.d/init.sql
+    restart: always
     env_file:
       - .env
     environment:
@@ -31,11 +15,28 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_LOWER_CASE_TABLE_NAMES: ${MYSQL_LOWER_CASE_TABLE_NAMES}
     volumes:
       - ./volume-fr-administration-database:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./my.cnf:/etc/mysql/my.cnf
     ports:
       - "${MYSQL_PORT}:${MYSQL_PORT}"
+    networks:
+      - app-network
+
+  rabbitmq:
+    container_name: rabbitmq-container
+    image: rabbitmq:3.12-management
+    restart: always
+    env_file:
+      - .env
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    ports:
+      - "${RABBITMQ_PORT_1}:${RABBITMQ_PORT_1}"
+      - "${RABBITMQ_PORT_2}:${RABBITMQ_PORT_2}"
     networks:
       - app-network
 
@@ -58,19 +59,21 @@ services:
       - /usr/src/app/node_modules
     networks:
       - app-network
-
-  rabbitmq:
-    container_name: rabbitmq-container
-    image: rabbitmq:3.12-management
-    restart: unless-stopped
+      
+  nginx:
+    container_name: http-server-container
     env_file:
       - .env
-    environment:
-      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    build:
+      context: .
+      dockerfile: fr-application-http-server/Dockerfile
+    depends_on:
+      - backend
     ports:
-      - "${RABBITMQ_PORT_1}:${RABBITMQ_PORT_1}"
-      - "${RABBITMQ_PORT_2}:${RABBITMQ_PORT_2}"
+      - "${NGINX_PORT}:${NGINX_PORT}"
+    volumes:
+      - ./fr-application-http-server/nginx.conf:/etc/nginx/nginx.conf
+      - ./fr-application-http-server/html/index.html:/var/www/html/index.html
     networks:
       - app-network
 
@@ -95,7 +98,7 @@ services:
     image: maildev/maildev:latest
     env_file:
       - .env
-    restart: unless-stopped
+    restart: always
     ports:
       - "${MAILDEV_PORT_1}:${MAILDEV_PORT_1}"
       - "${MAILDEV_PORT_2}:${MAILDEV_PORT_2}"
@@ -107,7 +110,7 @@ services:
     container_name: prometheus-container
     env_file:
       - .env
-    restart: unless-stopped
+    restart: always
     depends_on:
       - backend
       - rabbitmq
@@ -126,7 +129,7 @@ services:
     container_name: grafana-container
     env_file:
       - .env
-    restart: unless-stopped
+    restart: always
     depends_on:
       - prometheus
     environment:
