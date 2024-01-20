@@ -23,6 +23,7 @@ services:
   database:
     container_name: database-container
     image: mysql:latest
+    command: --init-file /docker-entrypoint-initdb.d/init.sql
     env_file:
       - .env
     environment:
@@ -32,6 +33,7 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - ./volume-fr-administration-database:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "${MYSQL_PORT}:${MYSQL_PORT}"
     networks:
