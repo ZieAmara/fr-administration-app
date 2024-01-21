@@ -9,5 +9,5 @@ This application uses several other of my git repositories, namely:
 - [fr-administration-quarkus](https://github.com/ZieAmara/fr-administration-quarkus.git)
 
 
-![IMG_2331](https://github.com/ZieAmara/fr-administration-app/assets/90223980/1c05ca89-d030-43a9-a93d-671485118941)
+<img width="1511" alt="image" src="https://github.com/ZieAmara/fr-administration-app/assets/90223980/f07440e4-ab98-4097-bb41-0d96545dd25c">
 
