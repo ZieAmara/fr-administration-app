@@ -35,6 +35,7 @@ echo "\nDocker images downloaded\n"
 
 # Start containers
 sudo docker-compose up --build -d
+sudo docker-compose up -d
 
 if [ $? -eq 1 ]; then
     echo "Failed to start containers."
